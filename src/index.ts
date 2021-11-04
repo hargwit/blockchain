@@ -8,21 +8,29 @@ type Transaction = {
   amount: number;
 };
 
-type Ledger = Transaction[];
+const Transaction = (
+  from: string,
+  to: string,
+  amount: number
+): Transaction => ({
+  from,
+  to,
+  amount,
+});
 
-const harryCoin = BlockChain<Ledger>();
+const harryCoin = BlockChain<Transaction>();
 
 harryCoin.addBlock(
   Block(Date.now().toString(), [
-    { from: "harry", to: "rach", amount: 10 },
-    { from: "rach", to: "harry", amount: 5 },
+    Transaction("harry", "rach", 10),
+    Transaction("rach", "harry", 5),
   ])
 );
 
 harryCoin.addBlock(
   Block(Date.now().toString(), [
-    { from: "harry", to: "rach", amount: 10 },
-    { from: "rach", to: "harry", amount: 5 },
+    Transaction("harry", "rach", 10),
+    Transaction("rach", "harry", 5),
   ])
 );
 
