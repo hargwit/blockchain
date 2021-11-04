@@ -1,6 +1,6 @@
-const crypto = require("crypto");
+import crypto from "crypto";
 
-const SHA256 = (message) =>
+const SHA256 = (message: string): string =>
   crypto.createHash("sha256").update(message).digest("hex");
 
 const Block = (timestamp = "", data = []) => {
@@ -10,7 +10,7 @@ const Block = (timestamp = "", data = []) => {
     prevHash: "",
     hash: "",
     nonce: 0,
-    mine(difficulty) {
+    mine(difficulty: number) {
       // Basically, it loops until our hash starts with
       // the string 0...000 with length of <difficulty>.
       while (!this.hash.startsWith(Array(difficulty + 1).join("0"))) {
