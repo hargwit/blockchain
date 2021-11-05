@@ -1,31 +1,25 @@
-import { Block } from "./Block";
-
-import { Node } from "./Node";
+import { Node } from './Node'
 
 type Transaction = {
-  from: string;
-  to: string;
-  amount: number;
-};
+    from: string
+    to: string
+    amount: number
+}
 
-const Transaction = (
-  from: string,
-  to: string,
-  amount: number
-): Transaction => ({
-  from,
-  to,
-  amount,
-});
+const Transaction = (from: string, to: string, amount: number): Transaction => ({
+    from,
+    to,
+    amount,
+})
 
-const node1 = Node<Transaction>();
+const node1 = Node<Transaction>()
 
-const node2 = Node<Transaction>();
+const node2 = Node<Transaction>()
 
-node2.registerTo(node1);
+node2.registerTo(node1)
 
-console.log(node1.blockchain().chain());
-console.log(node2.blockchain().chain());
+console.log(node1.blockchain().chain())
+console.log(node2.blockchain().chain())
 
 // Node A wants to join network
 // Node A tells Node B it wants to join
