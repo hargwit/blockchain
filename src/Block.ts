@@ -4,15 +4,15 @@ const SHA256 = (message: string): string => crypto.createHash('sha256').update(m
 
 type Block<T> = {
     timestamp: string
-    data: T[]
+    documents: T[]
     prevHash: string
     hash: string
 }
 
-const Block = <T>(timestamp: string, data: T[] = []): Block<T> => {
+const Block = <T>(timestamp: string, documents: T[] = []): Block<T> => {
     const block: Block<T> = {
         timestamp,
-        data,
+        documents,
         prevHash: '',
         hash: '',
     }
@@ -22,8 +22,8 @@ const Block = <T>(timestamp: string, data: T[] = []): Block<T> => {
     return block
 }
 
-Block.createHash = <T>(block: Block<T>) => SHA256(block.prevHash + block.timestamp + JSON.stringify(block.data))
+Block.createHash = <T>(block: Block<T>) => SHA256(block.prevHash + block.timestamp + JSON.stringify(block.documents))
 
-Block.of = <T>(data: T[] = []) => Block(Date.now().toString(), data)
+Block.of = <T>(documents: T[] = []) => Block(Date.now().toString(), documents)
 
 export { Block }

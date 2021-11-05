@@ -1,6 +1,6 @@
 import { v4 as uuid } from 'uuid'
 
-import { BlockChain } from './BlockChain'
+import { BlockChain, BlockChainArgs } from './BlockChain'
 
 /**
  * A node maintains its own version the blockchain.
@@ -36,11 +36,23 @@ type Node<T> = {
      * Registers this node to another network.
      */
     registerTo: (node: Node<T>) => void
+    /**
+     * Adds a new peice of data to the blockchain.
+     *
+     * This data will be pending until it is picked up and
+     * added to the next block.
+     */
+    add: (document: T) => void
 }
 
-const Node = <T>(): Node<T> => {
+type NodeArgs<T> = {
+    blockchainArgs?: BlockChainArgs<T>
+}
+
+const Node = <T>(args: NodeArgs<T> = {}): Node<T> => {
     let network: Node<T>[] = []
-    let blockchain: BlockChain<T> = BlockChain()
+    let blockchain: BlockChain<T> = BlockChain(args.blockchainArgs)
+    const pendingDocuments: T[] = []
 
     return {
         id: uuid(),
@@ -77,6 +89,17 @@ const Node = <T>(): Node<T> => {
 
             network = newNetwork
             blockchain = newBlockchain
+        },
+        add(document) {
+            if (!blockchain.validateDocument(document)) {
+                return
+            }
+
+            pendingDocuments.push(document)
+
+            network.forEach((node) => {
+                node.add(document)
+            })
         },
     }
 }

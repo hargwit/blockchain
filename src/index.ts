@@ -12,7 +12,27 @@ const Transaction = (from: string, to: string, amount: number): Transaction => (
     amount,
 })
 
-const node1 = Node<Transaction>()
+const validateTransaction = (transaction: Transaction, transactionHistory: Transaction[]): boolean => {
+    const balance = transactionHistory.reduce((acc, { from, to, amount }) => {
+        if (transaction.from === from) {
+            return acc - amount
+        }
+
+        if (transaction.from === to) {
+            return acc + amount
+        }
+
+        return acc
+    }, 0)
+
+    return transaction.amount <= balance
+}
+
+const node1 = Node<Transaction>({
+    blockchainArgs: {
+        validateDocument: validateTransaction,
+    },
+})
 
 const node2 = Node<Transaction>()
 
@@ -20,6 +40,12 @@ node2.registerTo(node1)
 
 console.log(node1.blockchain().chain())
 console.log(node2.blockchain().chain())
+
+node1.add({
+    from: 'harry',
+    to: 'rach',
+    amount: 1,
+})
 
 // Node A wants to join network
 // Node A tells Node B it wants to join
