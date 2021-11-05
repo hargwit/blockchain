@@ -1,6 +1,6 @@
 import { Block } from "./Block";
 
-import { BlockChain } from "./BlockChain";
+import { Node } from "./Node";
 
 type Transaction = {
   from: string;
@@ -18,22 +18,26 @@ const Transaction = (
   amount,
 });
 
-const harryCoin = BlockChain<Transaction>();
+const node1 = Node<Transaction>();
 
-harryCoin.addBlock(
-  Block(Date.now().toString(), [
-    Transaction("harry", "rach", 10),
-    Transaction("rach", "harry", 5),
-  ])
-);
+const node2 = Node<Transaction>();
 
-harryCoin.addBlock(
-  Block(Date.now().toString(), [
-    Transaction("harry", "rach", 10),
-    Transaction("rach", "harry", 5),
-  ])
-);
+node2.registerTo(node1);
 
-console.log(JSON.stringify(harryCoin.chain(), null, 4));
+console.log(node1.blockchain().chain());
+console.log(node2.blockchain().chain());
 
-console.log(harryCoin.isValid());
+// Node A wants to join network
+// Node A tells Node B it wants to join
+// Node B notifies other nodes of Node A
+// Node B adds Node A to list of nodes
+// Node B gives Node A the current blockchain and its list of nodes
+
+// Wallet wants to create a document
+// Wallet sends new document to random Node X
+// Node X adds document to list of pending documents
+// Node X informs rest of network about document
+// Node X builds a new block of N documents
+// Node X validates and hashes the new block
+// Node X sends block to rest of network
+// Other Nodes validate the block, ignoring it if it's rubbish
