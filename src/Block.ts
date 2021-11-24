@@ -7,6 +7,7 @@ type Block<T> = {
     documents: T[]
     prevHash: string
     hash: string
+    nonce: number
 }
 
 const Block = <T>(timestamp: string, documents: T[] = []): Block<T> => {
@@ -15,6 +16,7 @@ const Block = <T>(timestamp: string, documents: T[] = []): Block<T> => {
         documents,
         prevHash: '',
         hash: '',
+        nonce: 0,
     }
 
     block.hash = Block.createHash(block)
@@ -22,7 +24,7 @@ const Block = <T>(timestamp: string, documents: T[] = []): Block<T> => {
     return block
 }
 
-Block.createHash = <T>(block: Block<T>) => SHA256(block.prevHash + block.timestamp + JSON.stringify(block.documents))
+Block.createHash = <T>(block: Block<T>) => SHA256(JSON.stringify(block))
 
 Block.of = <T>(documents: T[] = []) => Block(Date.now().toString(), documents)
 
