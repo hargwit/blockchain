@@ -41,7 +41,7 @@ type BlockChainArgs<T> = {
 }
 
 const BlockChain = <T>({ validateDocument = () => true }: BlockChainArgs<T> = {}): BlockChain<T> => {
-    const genisis = Block.of<T>()
+    const genisis = Block<T>()
 
     const chain = [genisis]
 
@@ -54,7 +54,7 @@ const BlockChain = <T>({ validateDocument = () => true }: BlockChainArgs<T> = {}
         addBlock(block) {
             block.prevHash = this.last().hash
 
-            block.hash = Block.createHash(block)
+            block.hash = Block.hash(block)
 
             chain.push(block)
 
@@ -65,7 +65,7 @@ const BlockChain = <T>({ validateDocument = () => true }: BlockChainArgs<T> = {}
                 const currentBlock = chain[i]
                 const prevBlock = chain[i - 1]
 
-                const isCurrentHashWrong = currentBlock.hash !== Block.createHash(currentBlock)
+                const isCurrentHashWrong = currentBlock.hash !== Block.hash(currentBlock)
 
                 const isPrevHashWrong = currentBlock.prevHash !== prevBlock.hash
 

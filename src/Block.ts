@@ -8,7 +8,7 @@ type Block<T> = {
     nonce: number
 }
 
-const Block = <T>(timestamp: string, documents: T[] = []): Block<T> => {
+const Block = <T>(timestamp = Date.now().toString(), documents: T[] = []): Block<T> => {
     const block: Block<T> = {
         timestamp,
         documents,
@@ -17,13 +17,12 @@ const Block = <T>(timestamp: string, documents: T[] = []): Block<T> => {
         nonce: 0,
     }
 
-    block.hash = Block.createHash(block)
+    block.hash = Block.hash(block)
 
     return block
 }
 
-Block.createHash = <T>(block: Block<T>) => hash(JSON.stringify(block))
-
-Block.of = <T>(documents: T[] = []) => Block(Date.now().toString(), documents)
+Block.hash = <T>({ timestamp, documents, prevHash, nonce }: Block<T>) =>
+    hash(`${timestamp}${JSON.stringify(documents)}${prevHash}${nonce}`)
 
 export { Block }
