@@ -12,6 +12,12 @@ const balance = (book: BalanceBook, transaction: Transaction): BalanceBook => ({
     [transaction.to]: (book[transaction.to] || 0) + transaction.amount,
 })
 
+const validateTransaction = (transaction: Transaction, book: BalanceBook) => {
+    if (book[transaction.from] < transaction.amount) {
+        throw new Error('insufficient funds')
+    }
+}
+
 type Transaction = {
     from: string
     to: string
@@ -29,8 +35,9 @@ const blockchain = BlockChain<Transaction, BalanceBook>({
         harry: 100,
     },
     stateReducer: balance,
+    validateDocument: validateTransaction,
 })
 
-blockchain.addBlock(Block([Transaction('harry', 'rach', 1)]))
+blockchain.addBlock(Block([Transaction('harry', 'rach', 1), Transaction('rach', 'harry', 2)]))
 
 log(blockchain.state())

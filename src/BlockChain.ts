@@ -13,8 +13,6 @@ type BlockChain<Document, State> = {
     last: () => Block<Document>
     /**
      * Adds a new block to the chain.
-     *
-     * This performs no validation.
      */
     addBlock: (block: Block<Document>) => BlockChain<Document, State>
     /**
@@ -28,13 +26,25 @@ type BlockChain<Document, State> = {
 }
 
 type BlockChainArgs<Document, State> = {
+    /**
+     * The initial state of the blockchain.
+     */
     initialState: State
+    /**
+     * A reducer that determines how the state of the blockchain
+     * should be determined.
+     */
     stateReducer: (acc: State, prev: Document) => State
+    /**
+     * Validates an incoming document. Should throw if document is not valid.
+     */
+    validateDocument: (document: Document, state: State) => void
 }
 
 const BlockChain = <Document, State>({
     initialState,
     stateReducer,
+    validateDocument,
 }: BlockChainArgs<Document, State>): BlockChain<Document, State> => {
     const genisis = Block<Document>()
 
@@ -47,6 +57,14 @@ const BlockChain = <Document, State>({
             return last
         },
         addBlock(block) {
+            const currentState = this.state()
+
+            block.documents.forEach((document, index, documents) => {
+                const stateUpToDoc = documents.slice(0, index).reduce(stateReducer, currentState)
+
+                validateDocument(document, stateUpToDoc)
+            })
+
             block.prevHash = this.last().hash
 
             block.hash = Block.hash(block)
