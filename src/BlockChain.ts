@@ -68,4 +68,4 @@ const BlockChain = <Document, State>({
     }
 }
 
-export { BlockChain }
+export { BlockChain, BlockChainArgs }

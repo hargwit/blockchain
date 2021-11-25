@@ -6,7 +6,7 @@ type BalanceBook = {
     [user: string]: number
 }
 
-const balance = (book: BalanceBook, transaction: Transaction) => ({
+const balance = (book: BalanceBook, transaction: Transaction): BalanceBook => ({
     ...book,
     [transaction.from]: book[transaction.from] - transaction.amount,
     [transaction.to]: (book[transaction.to] || 0) + transaction.amount,
