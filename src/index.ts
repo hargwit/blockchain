@@ -38,6 +38,15 @@ const blockchain = BlockChain<Transaction, BalanceBook>({
     validateDocument: validateTransaction,
 })
 
-blockchain.addBlock(Block([Transaction('harry', 'rach', 1), Transaction('rach', 'harry', 2)]))
+try {
+    blockchain
+        .addBlock(Block([Transaction('harry', 'rach', 1)]))
+        .addBlock(Block([Transaction('harry', 'rach', 1)]))
+        .addBlock(Block([Transaction('rach', 'harry', 3)]))
+} catch (error) {
+    if (error instanceof Error) {
+        console.log('Failed to add block due to error: ', error.message)
+    }
+}
 
 log(blockchain.state())
