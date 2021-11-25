@@ -8,7 +8,7 @@ type Block<T> = {
     nonce: number
 }
 
-const Block = <T>(timestamp = Date.now().toString(), documents: T[] = []): Block<T> => {
+const Block = <T>(documents: T[] = [], timestamp = Date.now().toString()): Block<T> => {
     const block: Block<T> = {
         timestamp,
         documents,
