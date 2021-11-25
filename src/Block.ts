@@ -1,6 +1,4 @@
-import crypto from 'crypto'
-
-const SHA256 = (message: string): string => crypto.createHash('sha256').update(message).digest('hex')
+import { hash } from './hash'
 
 type Block<T> = {
     timestamp: string
@@ -24,7 +22,7 @@ const Block = <T>(timestamp: string, documents: T[] = []): Block<T> => {
     return block
 }
 
-Block.createHash = <T>(block: Block<T>) => SHA256(JSON.stringify(block))
+Block.createHash = <T>(block: Block<T>) => hash(JSON.stringify(block))
 
 Block.of = <T>(documents: T[] = []) => Block(Date.now().toString(), documents)
 
