@@ -6,25 +6,37 @@ import { Block } from './Block'
  *
  * Each block contains multiple documents.
  */
-type BlockChain<T> = {
+type BlockChain<Document, State> = {
     /**
      * Returns the final block in the chain.
      */
-    last: () => Block<T>
+    last: () => Block<Document>
     /**
      * Adds a new block to the chain.
      *
      * This performs no validation.
      */
-    addBlock: (block: Block<T>) => BlockChain<T>
+    addBlock: (block: Block<Document>) => BlockChain<Document, State>
     /**
      * Returns the whole block chain.
      */
-    chain: () => Block<T>[]
+    chain: () => Block<Document>[]
+    /**
+     * Returns the state of the blockchain by reducing over the documents.
+     */
+    state: () => State
 }
 
-const BlockChain = <T>(): BlockChain<T> => {
-    const genisis = Block<T>()
+type BlockChainArgs<Document, State> = {
+    initialState: State
+    stateReducer: (acc: State, prev: Document) => State
+}
+
+const BlockChain = <Document, State>({
+    initialState,
+    stateReducer,
+}: BlockChainArgs<Document, State>): BlockChain<Document, State> => {
+    const genisis = Block<Document>()
 
     const chain = [genisis]
 
@@ -45,6 +57,13 @@ const BlockChain = <T>(): BlockChain<T> => {
         },
         chain() {
             return chain
+        },
+        state() {
+            const documents = chain.flatMap(({ documents }) => documents)
+
+            const state = documents.reduce(stateReducer, initialState)
+
+            return state
         },
     }
 }
